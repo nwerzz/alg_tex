@@ -140,11 +140,11 @@ int main() {
     ll T_lim;
     double T_cost;
     cin >> T_lim >> T_cost >> ex;
-    vector<int> exits(n, 0);
+    vector<int> exits;
     for (int i = 0; i < ex; ++i) {
         int v;
         cin >> v;
-        exits[v] = 1;
+        exits.push_back(v)
     }
 
     vector<int> value(1 << item_cnt, 0);
@@ -155,5 +155,25 @@ int main() {
     vector<vector<vector<State>>> labels;
     solve(n, item_cnt, start, T_lim, graph, items, items_at, labels);
 
+    bool flag = false;
+    ll best_time = INF;
+    double best_c = -1e20;
+    for (int v : exits) {
+        for (int mask = 0; mask < (1 << item_cnt); ++mask) {
+            for (State& lab : labels[v][mask]) {
+                flag = true;
+                best_time = min(best_time, lab.time);
+                best_c = max(best_c, value[mask] - lab.time / T_cost);
+            }
+        }
+    }
+
+    if (flag) {
+        cout << "!!!";
+        cout << "мин время: " << best_time << "\n";
+        cout << fixed << "макс стоимость: " << best_c << "\n";
+    } else {
+        cout << "¡¡¡";
+    }
     return 0;
 }
